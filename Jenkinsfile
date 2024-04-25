@@ -58,7 +58,9 @@ pipeline {
                     environmentDefinition.targetPath = help.getEnvironmentProperty(environmentDefinition, "TargetPath")
                     echo "[INFO] ReadTargetPath = ${environmentDefinition.targetPath}"
                     configureDataStore(environmentDefinition)
+					echo "[INFO] configureDataStore"
                     buildInstallationEnvironment(environmentDefinition)
+					echo "[INFO] buildInstallationEnvironment"
                 }
             }
         }
