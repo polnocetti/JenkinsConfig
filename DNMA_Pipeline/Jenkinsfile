@@ -21,6 +21,7 @@ pipeline {
 		stage('Read Project Properties') {
 			steps {
 				script {
+					echo "Current workspace is $WORKSPACE"
 					projectDefinition = readProperties file: 'buildernode.properties';
 					projectDefinition = readProperties defaults: projectDefinition, file: 'knowledgebase.properties';
 					projectDefinition.forceRebuild = params.forceRebuild;
