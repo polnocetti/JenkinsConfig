@@ -22,7 +22,7 @@ pipeline {
                     echo "INFO GeneXus Installation:: ${projectDefinition.gxBasePath}"
                     echo "INFO KnowledgeBase:: ${projectDefinition.localKBPath}"
 					
-					usernamePassword(credentialsId: ${projectDefinition.gxserverCredentials}, usernameVariable: 'dbUsername', passwordVariable: 'dbPassword')
+					usernamePassword(credentialsId: projectDefinition.gxserverCredentials, usernameVariable: 'dbUsername', passwordVariable: 'dbPassword')
 					
 					echo "INFO *${dbUsername}* and *${dbPassword}*"
                 }
