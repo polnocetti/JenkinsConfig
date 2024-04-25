@@ -21,9 +21,8 @@ pipeline {
 		stage('Read Project Properties') {
 			steps {
 				script {
-					echo "Current workspace is ${context.WORKSPACE}"
-					projectDefinition = readProperties file: 'buildernode.properties';
-					projectDefinition = readProperties defaults: projectDefinition, file: 'knowledgebase.properties';
+					projectDefinition = readProperties file: '{$WORKSPACE}/DNMA_Pipeline/buildernode.properties';
+					projectDefinition = readProperties defaults: projectDefinition, file: '{$WORKSPACE}/DNMA_Pipeline/knowledgebase.properties';
 					projectDefinition.forceRebuild = params.forceRebuild;
 					echo "INFO MSBuild:: ${projectDefinition.msbuildExePath}"
 					echo "INFO GeneXus Installation:: ${projectDefinition.gxBasePath}"
@@ -60,7 +59,7 @@ pipeline {
 			}
 			steps {
 				script {
-					environmentDefinition = readProperties defaults: projectDefinition, file: 'environment.properties';
+					environmentDefinition = readProperties defaults: projectDefinition, file: '{$WORKSPACE}/DNMA_Pipeline/environment.properties';
 					environmentDefinition.targetPath = help.getEnvironmentProperty(environmentDefinition, "TargetPath")
 					echo "[INFO] ReadTargetPath = ${environmentDefinition.targetPath}"
 					configureDataStore(environmentDefinition)
@@ -78,7 +77,7 @@ pipeline {
 			}
 			steps {
 				script {
-					duDefinition = readProperties defaults: environmentDefinition, file: 'du_app.properties';
+					duDefinition = readProperties defaults: environmentDefinition, file: '{$WORKSPACE}/DNMA_Pipeline/du_app.properties';
 					packageLocalDU(duDefinition)
 				}
 			}
