@@ -1,11 +1,17 @@
 pipeline {
-    agent any
-    stages {
-        stage('hello') {
-            steps {
-                bat 'echo Hello Jenkins!'
-                bat 'echo $Action'
-            }
-        }
-    }
+	agent any
+	parameters {
+		choice(
+				name: 'Env',
+				choices: ['DEV', 'QA', 'UAT', 'PROD'],
+				description: 'Passing the Environment'
+				)
+	}
+	stages {
+		stage('Environment') {
+			steps {
+				echo " The environment is ${params.Env}"
+			}
+		}
+	}
 }
