@@ -22,7 +22,7 @@ def call(Map args = [:]) {
             /p:ProjectName="${args.duName}_${env.BUILD_NUMBER}" \
             /p:ObjectNames="DeploymentUnitCategory:${args.duName}" \
             /p:ApplicationServer="${args.duAppServer}" \
-            /p:DeployFullPath="${args.localKBPath}\\${args.targetPath}\\IntegrationPipeline\\${args.duName}\\${env.BUILD_NUMBER}" \
+            /p:DeployFullPath="${args.localKBPath}\\${args.targetPath}\\Deploy\\${args.TargetId}\\${args.duName}\\${env.BUILD_NUMBER}" \
             /p:CallTreeLogFile="${args.localKBPath}\\${args.targetPath}\\Web\\${args.duName}_${env.BUILD_NUMBER}_gxdprojCallTree.log" \
             /p:USE_APPSERVER_DATASOURCE="False" \
             /p:DEPLOY_TYPE="BINARIES" \
@@ -34,12 +34,12 @@ def call(Map args = [:]) {
             /p:TARGET_JRE="${args.duTargetJRE}" \
             /p:PACKAGE_FORMAT="Automatic" \
             /p:TimeStamp="${env.BUILD_NUMBER}" \
-            /l:FileLogger,Microsoft.Build.Engine;logfile=${args.localKBPath}\\${args.targetPath}\\IntegrationPipeline\\${args.duName}\\${env.BUILD_NUMBER}\\CreateDeploy.log
+            /l:FileLogger,Microsoft.Build.Engine;logfile=${args.localKBPath}\\${args.targetPath}\\Deploy\\${args.TargetId}\\${args.duName}\\${env.BUILD_NUMBER}\\CreateDeploy.log
             /t:CreateDeploy
         """
     gxdprojFilePath = "${args.localKBPath}\\${args.targetPath}\\Web\\${args.duName}_${env.BUILD_NUMBER}.gxdproj"
     
-    def packageLocationPath = "${args.localKBPath}\\${args.targetPath}\\IntegrationPipeline\\${args.duName}"
+    def packageLocationPath = "${args.localKBPath}\\${args.targetPath}\\Deploy\\${args.TargetId}\\${args.duName}"
     echo "DEBUG packageLocationPath::${packageLocationPath}"
     bat script: """
             "${args.msbuildExePath}" "${gxdprojFilePath}" \
@@ -47,7 +47,7 @@ def call(Map args = [:]) {
             /p:localKbPath="${args.localKBPath}" \
             /p:TimeStamp="${env.BUILD_NUMBER}" \
             /p:DeployFileFullPath="${packageLocationPath}" \
-            /p:DeployFullPath="${args.localKBPath}\\${args.targetPath}\\IntegrationPipeline\\${args.duName}\\${env.BUILD_NUMBER}" \
+            /p:DeployFullPath="${args.localKBPath}\\${args.targetPath}\\Deploy\${args.TargetId}\\${args.duName}\\${env.BUILD_NUMBER}" \
             /p:AppName="${args.duName}" \
             /t:CreatePackage
         """
