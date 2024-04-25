@@ -1,4 +1,4 @@
-@Library('github.com/genexuslabs/GeneXus-KBBuilder-Shared-Library') _
+@Library('gx-library@main') _
 
 import com.genexus.PropertiesHelper
 
