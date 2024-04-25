@@ -43,5 +43,19 @@ pipeline {
                 }
             }
         }
+		stage("Build Knowledge Base") {
+			when {
+                expression { params.ACTION == 'Build' || params.ACTION == 'Build only' || params.ACTION == 'Deploy'}
+            }
+            steps {
+                script {
+                    environmentDefinition = readProperties defaults: projectDefinition, file: 'environment.properties';
+                    environmentDefinition.targetPath = help.getEnvironmentProperty(environmentDefinition, "TargetPath")
+                    echo "[INFO] ReadTargetPath = ${environmentDefinition.targetPath}"
+                    configureDataStore(environmentDefinition)
+                    buildInstallationEnvironment(environmentDefinition)
+                }
+            }
+        }
 	}
 }
