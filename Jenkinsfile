@@ -6,9 +6,9 @@ pipeline {
 	agent any
 	parameters {
 		choice(
-				name: 'Accion',
-				choices: ['Update', 'Build', 'Deploy'],
-				description: 'Acción a ejecutar'
+				name: 'ACTION',
+				choices: ['Update', 'Build', 'Build only', 'Deploy'],
+				description: 'Ejecutar'
 				)
 	}
 	stages {
@@ -21,14 +21,13 @@ pipeline {
                     echo "INFO MSBuild:: ${projectDefinition.msbuildExePath}"
                     echo "INFO GeneXus Installation:: ${projectDefinition.gxBasePath}"
                     echo "INFO KnowledgeBase:: ${projectDefinition.localKBPath}"
-					
-					withCredentials([usernamePassword(credentialsId: projectDefinition.gxserverCredentials, usernameVariable: 'dbUsername', passwordVariable: 'dbPassword')]){
-						echo "INFO *${dbUsername}* and *${dbPassword}*"
-					}
                 }
             }
         }
         stage("Checkout/Update Knowledge Base") {
+			when {
+                expression { params.ACTION == 'Update' || params.ACTION == 'Build' || params.ACTION == 'Deploy'}
+            }
             steps {
                 script {
                     gxserver changelog: true, poll: true,
