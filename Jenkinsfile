@@ -66,4 +66,12 @@ pipeline {
             }
         }
 	}
+	 post {
+        always {
+            script {
+                /*sendNotifications(projectDefinition)*/
+                closeKnowledgeBase(projectDefinition)
+            }
+        }
+    }
 }
