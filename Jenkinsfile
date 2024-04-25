@@ -1,4 +1,4 @@
-@Library('gx-library@main') _
+@Library('gx-library') _
 
 import com.genexus.PropertiesHelper
 
