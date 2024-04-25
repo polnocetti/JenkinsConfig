@@ -16,6 +16,11 @@ pipeline {
 			choices: ['Update', 'Build', 'Build only', 'Deploy'],
 			description: 'Ejecutar'
 		)
+		choice(
+			name: 'WAR',
+			choices: ['ServiciosDNMA'],
+			description: 'Paquete a desplegar'
+		)
 	}
 	stages {
 		stage('Read Project Properties') {
@@ -78,6 +83,7 @@ pipeline {
 			steps {
 				script {
 					duDefinition = readProperties defaults: environmentDefinition, file: './DNMA_Pipeline/du_app.properties';
+					duDefinition.duName = params.WAR;
 					packageLocalDU(duDefinition)
 				}
 			}
