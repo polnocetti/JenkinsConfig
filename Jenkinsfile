@@ -66,6 +66,17 @@ pipeline {
             }
         }
 	}
+	stage('Package DU') {
+		when {
+			expression {params.ACTION == 'Deploy'}
+		}
+		steps {
+			script {
+				duDefinition = readProperties defaults: environmentDefinition, file: 'du_app.properties';
+				packageLocalDU(duDefinition)
+			}
+		}
+	}	
 	 post {
         always {
             script {
