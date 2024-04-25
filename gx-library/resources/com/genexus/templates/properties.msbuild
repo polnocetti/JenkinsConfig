@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Project DefaultTargets="ShowTargets" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<PropertyGroup>
+		<!-- Path of GeneXus installation -->
+		<GX_PROGRAM_DIR Condition="'$(GX_PROGRAM_DIR)'==''"></GX_PROGRAM_DIR>
+	</PropertyGroup>
+
+	<Import Project="$(GX_PROGRAM_DIR)\Imports.targets" />
+
+    <Target Name="ShowTargets">
+        <Message Text="AvoidDatastoreConnections" />
+        <Message Text="ConfigureDataStore" />
+        <Message Text="ConfigureGAMDataStore" />
+        <Message Text="GetEnvironmentProperty" />
+        <Message Text="SetEnvironmentProperty" />
+        <Message Text="GetGeneratorProperty" />
+        <Message Text="SetGeneratorProperty" />
+        <Message Text="GetObjectProperty" />
+        <Message Text="SetObjectProperty" />
+        <Message Text="CloseKB" />
+    </Target>
+
+    <Target Name="AvoidDatastoreConnections">
+        <OpenKnowledgeBase Directory="$(localKbPath)" />
+        <SetActiveEnvironment EnvironmentName="$(environmentName)" />
+        <SetEnvironmentProperty Name="Keep GAM database updated" Value="false" />
+        <SetEnvironmentProperty Name="Deploy business processes on build" Value="No" />
+        <SetEnvironmentProperty Name="Populate Data" Value="false" />
+        <SetGeneratorProperty Generator="Default" Name="Reorganize server tables" Value="No" />
+        <SetGeneratorProperty Generator="Default" Name="deploy to cloud" Value="No" />
+        <CloseKnowledgeBase/>
+    </Target>
+
+    <Target Name="ConfigureDataStore">
+        <OpenKnowledgeBase Directory="$(localKbPath)" />
+        <SetActiveEnvironment EnvironmentName="$(environmentName)" />
+        <SetDataStoreProperty DataStore="$(dataStoreName)" Name="Database name" Value="$(dbName)" />
+        <SetDataStoreProperty DataStore="$(dataStoreName)" Name="Server name" Value="$(dbServerName)" />
+        <SetDataStoreProperty DataStore="$(dataStoreName)" Name="Server TCP/IP port" Value="$(dbServerPort)" />
+        <SetDataStoreProperty DataStore="$(dataStoreName)" Name="User id" Value="$(dbServerUser)" />
+        <SetDataStoreProperty DataStore="$(dataStoreName)" Name="User password" Value="$(dbServerPass)" />
+        <GetEnvironmentProperty Name="DataSource" >
+            <Output TaskParameter="PropertyValue" PropertyName="EnvDataSource"/>
+        </GetEnvironmentProperty>
+        <GetEnvironmentProperty Name="GeneratedLanguage" >
+            <Output TaskParameter="PropertyValue" PropertyName="EnvGenerator"/>
+        </GetEnvironmentProperty>
+        <SetGeneratorProperty Generator="Default" Name="Reorganize server tables" Value="Yes" />
+        <SetDataStoreProperty DataStore="$(dataStoreName)" Condition="'$(EnvGenerator)'=='.NET' AND '$(EnvDataSource)'=='SQL Server'" Name="Use trusted connection" Value="No" />
+        <SetDataStoreProperty DataStore="$(dataStoreName)" Condition="'$(EnvGenerator)'=='Java'" Name="Use custom JDBC URL" Value="False" />
+        <SetEnvironmentProperty Condition="'$(dataStoreName)'=='GAM'" Name="Keep GAM database updated" Value="true" />
+    </Target>
+
+    <Target Name="GetEnvironmentProperty">
+        <!-- Task to create .json file with property name n value-->
+        <OpenKnowledgeBase Directory="$(localKbPath)" />
+        <SetActiveEnvironment EnvironmentName="$(environmentName)" />
+        <Delete Condition="Exists($(propFileAbsolutePath))" Files='$(propFileAbsolutePath)' />     
+        <WriteLinesToFile File="$(propFileAbsolutePath)" Lines="{" />
+        <GetEnvironmentProperty Name="$(environmentPropName)" >
+            <Output TaskParameter="PropertyValue" PropertyName="EnvironmentPropValue"/>
+        </GetEnvironmentProperty>
+        <WriteLinesToFile File="$(propFileAbsolutePath)" Lines='"$(helperName)":"$(EnvironmentPropValue)",' />
+        <WriteLinesToFile File="$(propFileAbsolutePath)" Lines="}" />
+    </Target>
+    
+    <Target Name="SetEnvironmentProperty">
+        <OpenKnowledgeBase Directory="$(localKbPath)" />
+        <SetActiveEnvironment EnvironmentName="$(environmentName)" />
+        <SetEnvironmentProperty Name="$(environmentPropName)" Value="$(environmentPropValue)" />
+		<CloseKnowledgeBase/>
+    </Target>
+    
+    <Target Name="GetGeneratorProperty">
+        <!-- Task to create .json file with property name n value-->
+        <OpenKnowledgeBase Directory="$(localKbPath)" />
+        <SetActiveEnvironment EnvironmentName="$(environmentName)" />
+        <Delete Condition="Exists($(propFileAbsolutePath))" Files='$(propFileAbsolutePath)' />     
+        <WriteLinesToFile File="$(propFileAbsolutePath)" Lines="{" />
+        <GetGeneratorProperty Name="$(generatorPropName)" > 
+            <Output TaskParameter="PropertyValue" PropertyName="GeneratorPropValue"/> 
+        </GetGeneratorProperty> 
+        <WriteLinesToFile File="$(propFileAbsolutePath)" Lines='"$(helperName)":"$(GeneratorPropValue)"' />
+        <WriteLinesToFile File="$(propFileAbsolutePath)" Lines="}" />
+    </Target>
+    
+    <Target Name="SetGeneratorProperty">
+        <OpenKnowledgeBase Directory="$(localKbPath)" />
+        <!-- 
+        START TRUNK
+        <HasGenerator GeneratorName="Frontend">
+            <Output TaskParameter="Found" PropertyName="GeneratorFound" />
+            <Output TaskParameter="GeneratorType" PropertyName="GeneratorType" />
+            <Output TaskParameter="UserInterface" PropertyName="GeneratorUserInterface" />
+            <Output TaskParameter="Language" PropertyName="GeneratorLanguage" />
+        </HasGenerator>
+        <Message Text="The generator with name 'Frontend' was not found" Condition=" '$(GeneratorFound)' == 'false' " Importance="high" />
+        <Message Text="The generator with name 'Frontend' was found, is of type '$(GeneratorType)', generates '$(GeneratorLanguage)' for '$(GeneratorUserInterface)'" Condition=" '$(GeneratorFound)' == 'true' " Importance="high" />
+        <SetGeneratorProperty Condition="'$(GeneratorFound)'=='true'" Generator="Frontend" Name="ANGULAR_GENERATION_MODE" Value="Distribution" />
+        END TRUNK
+        -->
+        <SetGeneratorProperty Generator="$(generatorName)" Name="$(generatorPropName)" Value="$(generatorPropValue)" />
+		<CloseKnowledgeBase/>
+    </Target>
+
+    <Target Name="GetObjectProperty">
+        <!-- Task to create .json file with property name n value-->
+		<OpenKnowledgeBase Directory="$(localKbPath)"/>
+        <Delete Condition="Exists($(propFileAbsolutePath))" Files='$(propFileAbsolutePath)' />     
+        <WriteLinesToFile File="$(propFileAbsolutePath)" Lines="{" />
+        <GetObjectProperty Object="$(objectName)" Name="$(objectPropName)">
+            <Output TaskParameter="PropertyValue" PropertyName="ObjectPropValue" />
+        </GetObjectProperty>
+        <WriteLinesToFile File="$(propFileAbsolutePath)" Lines='"$(helperName)":"$(ObjectPropValue)"' />
+        <WriteLinesToFile File="$(propFileAbsolutePath)" Lines="}" />
+    </Target>
+
+    <Target Name="SetObjectProperty">
+        <OpenKnowledgeBase Directory="$(localKbPath)" />
+        <SetObjectProperty Object="$(objectName)" Name="$(objectPropName)" Value="$(objectPropValue)" />
+		<CloseKnowledgeBase/>
+    </Target>
+    
+</Project>
