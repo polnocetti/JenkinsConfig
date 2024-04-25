@@ -10,6 +10,7 @@ def help = new PropertiesHelper()
 pipeline {
 	agent any
 	parameters {
+		booleanParam(defaultValue: false, description: 'Force rebuild', name: 'forceRebuild')
 		choice(
 				name: 'ACTION',
 				choices: ['Update', 'Build', 'Build only', 'Deploy'],
@@ -22,7 +23,7 @@ pipeline {
                 script {
                     projectDefinition = readProperties file: 'buildernode.properties';
                     projectDefinition = readProperties defaults: projectDefinition, file: 'knowledgebase.properties';
-                                        
+                    projectDefinition.forceRebuild = params.forceRebuild;
                     echo "INFO MSBuild:: ${projectDefinition.msbuildExePath}"
                     echo "INFO GeneXus Installation:: ${projectDefinition.gxBasePath}"
                     echo "INFO KnowledgeBase:: ${projectDefinition.localKBPath}"
