@@ -47,7 +47,7 @@ def call(Map args = [:]) {
             /p:localKbPath="${args.localKBPath}" \
             /p:TimeStamp="${env.BUILD_NUMBER}" \
             /p:DeployFileFullPath="${packageLocationPath}" \
-            /p:DeployFullPath="${args.localKBPath}\\${args.targetPath}\\Deploy\LOCAL\\${args.duName}\\${env.BUILD_NUMBER}" \
+            /p:DeployFullPath="${args.localKBPath}\\${args.targetPath}\\Deploy\\LOCAL\\${args.duName}\\${env.BUILD_NUMBER}" \
             /p:AppName="${args.duName}" \
             /t:CreatePackage
         """
