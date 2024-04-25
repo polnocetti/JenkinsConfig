@@ -2,6 +2,11 @@
 
 import com.genexus.PropertiesHelper
 
+def projectDefinition = [:]
+def environmentDefinition = [:]
+
+def help = new PropertiesHelper()
+
 pipeline {
 	agent any
 	parameters {
