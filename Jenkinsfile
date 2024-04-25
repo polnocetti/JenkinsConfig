@@ -4,6 +4,7 @@ pipeline {
         stage('hello') {
             steps {
                 bat 'echo Hello Jenkins!'
+                bat 'echo $Action'
             }
         }
     }
