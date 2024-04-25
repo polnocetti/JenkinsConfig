@@ -21,6 +21,7 @@ pipeline {
                     echo "INFO MSBuild:: ${projectDefinition.msbuildExePath}"
                     echo "INFO GeneXus Installation:: ${projectDefinition.gxBasePath}"
                     echo "INFO KnowledgeBase:: ${projectDefinition.localKBPath}"
+					echo "INFO ${projectDefinition.gxserverCredentials}"
                 }
             }
         }
