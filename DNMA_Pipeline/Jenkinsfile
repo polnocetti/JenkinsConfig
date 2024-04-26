@@ -86,7 +86,7 @@ pipeline {
 					duDefinition.duName = params.WAR;
 					def theWar = packageLocalDU(duDefinition);
 					echo "[INFO] ${theWar}"
-					bat("xcopy ${theWar} ${duDefinition.duDestinationFolder} /O /X /E /H /K")
+					bat("copy ${theWar} ${duDefinition.duDestinationFolder}\\${params.WAR}.war")
 				}
 			}
 		}
