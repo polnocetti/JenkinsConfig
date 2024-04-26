@@ -65,11 +65,11 @@ pipeline {
 			steps {
 				script {
 					environmentDefinition = readProperties defaults: projectDefinition, file: './DNMA_Pipeline/environment.properties';
-					environmentDefinition.targetPath = help.getEnvironmentProperty(environmentDefinition, "TargetPath")
+					environmentDefinition.targetPath = help.getEnvironmentProperty(environmentDefinition, "TargetPath");
 					echo "[INFO] ReadTargetPath = ${environmentDefinition.targetPath}"
-					configureDataStore(environmentDefinition)
+					configureDataStore(environmentDefinition);
 					echo "[INFO] configureDataStore"
-					buildInstallationEnvironment(environmentDefinition)
+					buildInstallationEnvironment(environmentDefinition);
 					echo "[INFO] buildInstallationEnvironment"
 				}
 			}
@@ -84,7 +84,9 @@ pipeline {
 				script {
 					duDefinition = readProperties defaults: environmentDefinition, file: './DNMA_Pipeline/du_app.properties';
 					duDefinition.duName = params.WAR;
-					packageLocalDU(duDefinition)
+					def theWar = packageLocalDU(duDefinition);
+					echo "[INFO] ${theWar}"
+					bat("xcopy ${theWar} ${duDefinition.duDestinationFolder} /O /X /E /H /K")
 				}
 			}
 		}
