@@ -94,7 +94,7 @@ pipeline {
 	post {
 		always {
 			script {
-				/*sendNotifications(projectDefinition)*/
+				sendNotifications(projectDefinition)
 				closeKnowledgeBase(projectDefinition)
 			}
 		}
